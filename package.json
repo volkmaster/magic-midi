@@ -1,0 +1,59 @@
+{
+  "private": true,
+  "name": "magic-midi",
+  "description": "Magic Midi Music Recorder.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": {
+    "url": "git+https://github.com/tinaavbelj/magic-midi.git",
+    "type": "git"
+  },
+  "bugs": {
+    "url": "https://github.com/tinaavbelj/magic-midi/issues"
+  },
+  "contributors": [
+    {
+      "name": "Tina Avbelj",
+      "email": "tina.avbelj@gmail.com"
+    },
+    {
+      "name": "Ziga Vucko",
+      "email": "ziga.vucko@gmail.com",
+      "url": "http://www.gep.si"
+    }
+  ],
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "postinstall": "npm run build",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "9.2.0",
+    "npm": "5.5.1"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "copy-webpack-plugin": "^4.2.3",
+    "cross-env": "^5.1.1",
+    "css-loader": "^0.28.7",
+    "express": "^4.16.2",
+    "file-loader": "^0.11.2",
+    "jquery": "^3.2.1",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
+    "lodash": "^4.17.4",
+    "moment": "^2.19.2",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.6",
+    "vue": "^2.5.8",
+    "vue-loader": "^12.2.2",
+    "vue-template-compiler": "^2.5.8",
+    "webpack": "^2.7.0"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^2.9.4"
+  }
+}
