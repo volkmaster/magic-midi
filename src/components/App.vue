@@ -43,6 +43,20 @@
 .app__key--black {
   fill: @black;
 }
+
+.app__instruments--element {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app__instruments--element--img-div {
+  width: 3vw;
+}
+
+.app__instruments--element--img-div--img {
+  width: 100%;
+}
 </style>
 
 <template>
@@ -55,6 +69,40 @@
       <rect class="app__key--white" :x="(100 / nWhite * index) + '%'" y="0%" :width="(100 / nWhite) + '%'" height="100%" v-for="(key, index) in whiteKeys" @click="keyPressed(key)"></rect>
       <rect class="app__key--black" :x="(100 / nWhite * (0.75 + index)) + '%'" y="0%" :width="(100 / nWhite * 0.5) + '%'" height="50%" v-for="(key, index) in blackKeys" v-if="key.pitch !== -1" @click="keyPressed(key)"></rect>
     </svg>
+    <div class="app__instruments">
+      <div class="app__instruments--element">
+        <div class="app__instruments--element--img-div">
+          <img class="app__instruments--element--img-div--img" src="/assets/images/violin.png"/>
+        </div>
+        <div class="app__instruments--element--checkbox-div">
+          <input type="checkbox" name="violin">
+        </div>
+      </div>
+      <div class="app__instruments--element">
+        <div class="app__instruments--element--img-div">
+          <img class="app__instruments--element--img-div--img" src="/assets/images/piano.png"/>
+        </div>
+        <div class="app__instruments--element--checkbox-div">
+          <input type="checkbox" name="piano">
+        </div>
+      </div>
+      <div class="app__instruments--element">
+        <div class="app__instruments--element--img-div">
+          <img class="app__instruments--element--img-div--img" src="/assets/images/trumpet.png"/>
+        </div>
+        <div class="app__instruments--element--checkbox-div">
+          <input type="checkbox" name="trumpet">
+        </div>
+      </div>
+      <div class="app__instruments--element">
+        <div class="app__instruments--element--img-div">
+          <img class="app__instruments--element--img-div--img" src="/assets/images/guitar.png"/>
+        </div>
+        <div class="app__instruments--element--checkbox-div">
+          <input type="checkbox" name="guitar">
+        </div>
+      </div>
+    </div>
     <instructions></instructions>
   </div>
 </template>
@@ -115,7 +163,7 @@ export default {
             var delay = 0       // play one note every quarter second
             var note = 50
             var velocity = 127
-
+            /*
             MIDI.setVolume(0, 127)
             MIDI.noteOn(0, note, velocity, delay)
             MIDI.noteOff(0, note, delay + 0.75)
@@ -125,6 +173,7 @@ export default {
             MIDI.setVolume(0, 127)
             MIDI.noteOn(0, note, velocity, delay)
             MIDI.noteOff(0, note, delay + 0.75)
+            */
         }
     })
   },
@@ -134,6 +183,12 @@ export default {
   methods: {
     keyPressed (key) {
       console.log(key.pitch)
+      var delay = 0       // play one note every quarter second
+      var note = key.pitch
+      var velocity = 127
+      MIDI.setVolume(0, 127)
+      MIDI.noteOn(0, note, velocity, delay)
+      MIDI.noteOff(0, note, delay + 0.75)
     }
   },
   components: {
