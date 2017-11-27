@@ -54,6 +54,11 @@ module.exports = {
         from: path.resolve(__dirname, './assets'),
         to: path.resolve(__dirname, './dist/assets'),
         ignore: ['.*']
+      },
+      {
+        from: path.resolve(__dirname, './src/lib'),
+        to: path.resolve(__dirname, './dist/lib'),
+        ignore: ['.*']
       }
     ])
   ],
