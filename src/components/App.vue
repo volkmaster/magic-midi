@@ -214,9 +214,11 @@ export default {
       return keys.length > 0 ? keys[0] : null
     },
     mousedown (key) {
+      key.on = true
       this.noteOn(key.pitch)
     },
     mouseup (key) {
+      key.on = false
       this.noteOff(key.pitch)
     },
     keydown (event) {
