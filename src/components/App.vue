@@ -64,13 +64,16 @@
 }
 
 .app__instruments {
-  height  : calc(~'100vh - 30vw');
+  //height  : calc(~'100vh - 30vw');
   padding : 20px 10vw 10px 10vw;
+  display: flex;
+  justify-content: center;
 }
 
 .app__instruments-element {
   display         : flex;
-  justify-content : space-between;
+  flex-direction: column;
+  justify-content : flex-start;
   align-items     : center;
 }
 
@@ -85,11 +88,111 @@
   max-width  : calc(~'(100vh - 30vw - 30px) / 4 * 1.2');;
   max-height : calc(~'(100vh - 30vw - 30px) / 4');;
   object-fit : contain;
+  cursor: pointer;
 }
 
 .app__instruments-checkbox-div {}
 
-.app__instruments-checkbox {}
+.app__instruments-checkbox {
+  cursor: pointer;
+}
+
+.app__delete-div {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  border: 1px solid @very-light-gray;
+  border-radius: 5px;
+  color: @very-light-gray;
+  font-size: 10px;
+  cursor: pointer;
+
+  &:hover {
+    //border: 1px solid @yellow;
+    background-color: @dark-gray;
+  }
+}
+
+.app__delete-img {
+  width: 7px;
+  height: auto;
+}
+
+.app__buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  width: 100px;
+  padding: 10px;
+  border: 2px solid @yellow;
+  border-radius: 5px;
+  background-color: @yellow;
+  color: @gray;
+  font-family: 'Grand Hotel';
+  font-size: 30px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: @dark-yellow;
+    border: 2px solid @dark-yellow;
+  }
+}
+
+.button-record {
+  margin-right: 10px;
+  background-color: @orange;
+  border: 2px solid @orange;
+
+  &:hover {
+    background-color: @dark-orange;
+    border: 2px solid @dark-orange;
+  }
+}
+
+.button-stop {
+  margin-right: 10px;
+  background-color: @red;
+  border: 2px solid @red;
+
+  &:hover {
+    background-color: @dark-red;
+    border: 2px solid @dark-red;
+  }
+}
+
+.button-play {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.button-save {
+  margin-left: 10px;
+}
+
+.app__nav {
+  padding: 10px;
+}
+
+.app__nav-button {
+  width: 100px;
+  margin-bottom: 10px;
+  padding: 7px;
+  border: 2px solid @very-light-gray;
+  border-radius: 5px;
+  background-color: @very-light-gray;
+  color: @gray;
+  font-family: 'Grand Hotel';
+  font-size: 22px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: @light-gray;
+    border: 2px solid @light-gray;
+  }
+}
+
 </style>
 
 <template>
@@ -110,17 +213,32 @@
       <div class="app__instruments">
         <div class="app__instruments-element" v-for="instrument in instruments">
           <div class="app__instruments-img-div">
-            <img class="app__instruments-img" :src="'/assets/images/' + instrument.name + '.png'"/>
+            <img class="app__instruments-img" :src="'/assets/images/' + instrument.name + '.svg'"/>
           </div>
-          <div class="app__instruments-checkbox-div">
+          <div v-if="instrument.recorded" class="app__instruments-checkbox-div">
             <input class="app__instruments-checkbox" type="checkbox" :name="instrument.name">
+          </div>
+          <div v-if="instrument.recorded" class="app__delete-div">
+            <img class="app__delete-img" :src="'/assets/images/delete-gray.svg'"/>
           </div>
         </div>
       </div>
+      <div class="app__buttons">
+        <div class="app__record-button-wrapper">
+          <button v-if="!recording" class="button button-record" @click="toggleRecording">Record</button>
+          <button v-else class="button button-stop" @click="toggleRecording">Stop</button>
+        </div>
+        <div class="app__play-button-wrapper">
+          <button class="button button-play">Play</button>
+        </div>
+        <div class="app__save-button-wrapper">
+          <button class="button button-save">Save</button>
+        </div>
+      </div>
     </div>
-    <div style="position: absolute; right: 0; top: 0; display: flex; flex-direction: column;">
-      <button @click="helperTextVisible = instructionsVisible ? helperTextVisible : !helperTextVisible">TOGGLE HELPER TEXT</button>
-      <button @click="openInstructions">SHOW INSTRUCTIONS</button>
+    <div class="app__nav" style="position: absolute; right: 0; top: 0; display: flex; flex-direction: column;">
+      <button class="app__nav-button" @click="openInstructions">Instructions</button>
+      <button class="app__nav-button" @click="helperTextVisible = instructionsVisible ? helperTextVisible : !helperTextVisible">Keyboard</button>
     </div>
     <instructions
       v-if="instructionsVisible"
@@ -169,13 +287,16 @@ export default {
         ]
       },
       instruments: [
-        { name: 'piano' },
-        { name: 'trumpet' },
-        { name: 'guitar' },
-        { name: 'violin' }
+        { name: 'piano', recorded: true, selected: false },
+        { name: 'trumpet', recorded: true, selected: false },
+        { name: 'clarinet_recorded', recorded: false, selected: false },
+        { name: 'guitar_selected', recorded: false, selected: false },
+        { name: 'violin', recorded: true, selected: false },
+        { name: 'saxophone', recorded: false, selected: false }
       ],
       helperTextVisible: false,
-      instructionsVisible: false
+      instructionsVisible: false,
+      recording: false
     }
   },
   computed: {
@@ -250,6 +371,14 @@ export default {
       setTimeout(() => {
         this.instructionsVisible = false
       }, time * 1000)
+    },
+    toggleRecording () {
+      if (this.recording) {
+        this.recording = false;
+      }
+      else {
+        this.recording = true;
+      }
     }
   },
   components: {
