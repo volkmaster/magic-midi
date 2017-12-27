@@ -11,9 +11,37 @@
   overflow         : hidden;
 }
 
-.app__content {}
+.app__navigation {
+  position       : absolute;
+  right          : 0;
+  top            : 0;
+  padding        : 10px;
+  display        : flex;
+  flex-direction : column;
+}
 
-.app__content--blur { filter: blur(3px); }
+.app__navigation-button {
+  width            : 100px;
+  margin-bottom    : 10px;
+  padding          : 7px;
+  border           : 2px solid @very-light-gray;
+  border-radius    : 5px;
+  font-family      : @magic-midi-font;
+  font-size        : 22px;
+  background-color : @very-light-gray;
+  color            : @gray;
+
+  &:hover {
+    border           : 2px solid @light-gray;
+    background-color : @light-gray;
+    cursor           : pointer;
+  }
+}
+
+.app__content--blur, .app__navigation--blur {
+  filter         : blur(3px);
+  pointer-events : none;
+}
 
 .app__header {
   padding-top     : 20px;
@@ -64,143 +92,98 @@
 }
 
 .app__instruments {
-  //height  : calc(~'100vh - 30vw');
-  padding : 20px 10vw 10px 10vw;
-  display: flex;
-  justify-content: center;
-}
-
-.app__instruments-element {
-  display         : flex;
-  flex-direction: column;
-  justify-content : flex-start;
-  align-items     : center;
-}
-
-.app__instruments-img-div {
-  width           : calc(~'(100vh - 30vw - 30px) / 4 * 1.2');;
-  height          : calc(~'(100vh - 30vw - 30px) / 4');;
+  // height  : calc(~'100vh - 30vw');
+  padding         : 20px 10vw 10px 10vw;
   display         : flex;
   justify-content : center;
 }
 
-.app__instruments-img {
+.app__instrument {
+  display         : flex;
+  flex-direction  : column;
+  justify-content : flex-start;
+  align-items     : center;
+}
+
+.app__img, .app__checkbox { cursor: pointer; }
+
+.app__img--instrument {
   max-width  : calc(~'(100vh - 30vw - 30px) / 4 * 1.2');;
   max-height : calc(~'(100vh - 30vw - 30px) / 4');;
   object-fit : contain;
-  cursor: pointer;
 }
 
-.app__instruments-checkbox-div {}
+.app__img--delete {
+  width         : 18px;
+  height        : 18px;
+  padding       : 4px;
+  border        : 1px solid @very-light-gray;
+  border-radius : 5px;
 
-.app__instruments-checkbox {
-  cursor: pointer;
-}
-
-.app__delete-div {
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  border: 1px solid @very-light-gray;
-  border-radius: 5px;
-  color: @very-light-gray;
-  font-size: 10px;
-  cursor: pointer;
-
-  &:hover {
-    //border: 1px solid @yellow;
-    background-color: @dark-gray;
-  }
-}
-
-.app__delete-img {
-  width: 7px;
-  height: auto;
+  &:hover { background-color: @dark-gray; }
 }
 
 .app__buttons {
-  display: flex;
-  justify-content: center;
+  display         : flex;
+  justify-content : center;
 }
 
-.button {
-  width: 100px;
-  padding: 10px;
-  border: 2px solid @yellow;
-  border-radius: 5px;
-  background-color: @yellow;
-  color: @gray;
-  font-family: 'Grand Hotel';
-  font-size: 30px;
+.app__button {
+  width            : 100px;
+  padding          : 10px;
+  border           : 2px solid @yellow;
+  border-radius    : 5px;
+  font-family      : @magic-midi-font;
+  font-size        : 30px;
+  background-color : @yellow;
+  color            : @gray;
+  cursor           : pointer;
 
   &:hover {
-    cursor: pointer;
-    background-color: @dark-yellow;
-    border: 2px solid @dark-yellow;
+    border           : 2px solid @dark-yellow;
+    background-color : @dark-yellow;
   }
 }
 
-.button-record {
-  margin-right: 10px;
-  background-color: @orange;
-  border: 2px solid @orange;
+.app__button_record {
+  margin-right     : 10px;
+  border           : 2px solid @orange;
+  background-color : @orange;
 
   &:hover {
-    background-color: @dark-orange;
-    border: 2px solid @dark-orange;
+    border           : 2px solid @dark-orange;
+    background-color : @dark-orange;
   }
 }
 
-.button-stop {
-  margin-right: 10px;
-  background-color: @red;
-  border: 2px solid @red;
+.app__button_stop {
+  margin-right     : 10px;
+  border           : 2px solid @red;
+  background-color : @red;
 
   &:hover {
-    background-color: @dark-red;
-    border: 2px solid @dark-red;
+    border           : 2px solid @dark-red;
+    background-color : @dark-red;
   }
 }
 
-.button-play {
-  margin-left: 10px;
-  margin-right: 10px;
-}
+.app__button_play { margin: 0 10px; }
 
-.button-save {
-  margin-left: 10px;
-}
-
-.app__nav {
-  padding: 10px;
-}
-
-.app__nav-button {
-  width: 100px;
-  margin-bottom: 10px;
-  padding: 7px;
-  border: 2px solid @very-light-gray;
-  border-radius: 5px;
-  background-color: @very-light-gray;
-  color: @gray;
-  font-family: 'Grand Hotel';
-  font-size: 22px;
-
-  &:hover {
-    cursor: pointer;
-    background-color: @light-gray;
-    border: 2px solid @light-gray;
-  }
-}
-
+.app__button_save { margin-left: 10px; }
 </style>
 
 <template>
   <div class="app">
+
+    <!-- Content -->
     <div class="app__content" :class="{ 'app__content--blur': instructionsVisible }">
+
+      <!-- Logo -->
       <div class="app__header">
         <img class="app__logo" src="/assets/images/logo.png"/>
       </div>
+
+      <!-- Keyboard -->
       <svg class="app__svg" width="60vw" height="15vw" viewBox="0 0 100 25" preserveAspectRatio="xMidYMid meet">
         <rect class="app__key app__key--white" :class="{ 'app__key--pressed': key.on }" :x="(100 / nKeys * index) + '%'" y="0%" :width="(100 / nKeys) + '%'" height="100%" v-for="(key, index) in keys.white" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
         <rect class="app__key app__key--black" :class="{ 'app__key--pressed': key.on }" :x="(100 / nKeys * (0.75 + index)) + '%'" y="0%" :width="(100 / nKeys * 0.5) + '%'" height="50%" v-for="(key, index) in keys.black" v-if="key.pitch !== -1" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
@@ -210,40 +193,35 @@
         </g>
         <rect class="app__keyboard" x="0%" y="0%" width="100%" height="100%"></rect>
       </svg>
+
+      <!-- Instruments -->
       <div class="app__instruments">
-        <div class="app__instruments-element" v-for="instrument in instruments">
-          <div class="app__instruments-img-div">
-            <img class="app__instruments-img" :src="'/assets/images/' + instrument.name + '.svg'"/>
-          </div>
-          <div v-if="instrument.recorded" class="app__instruments-checkbox-div">
-            <input class="app__instruments-checkbox" type="checkbox" :name="instrument.name">
-          </div>
-          <div v-if="instrument.recorded" class="app__delete-div">
-            <img class="app__delete-img" :src="'/assets/images/delete-gray.svg'"/>
-          </div>
+        <div class="app__instrument" v-for="instrument in instruments">
+          <img class="app__img app__img--instrument" :src="'/assets/images/' + getInstrumentImageName(instrument) + '.svg'" @click="toggleInstrumentSelection(instrument)"/>
+          <input class="app__checkbox" type="checkbox" :name="instrument.name" v-if="instrument.record">
+          <img class="app__img app__img--delete" src="/assets/images/delete-gray.svg" v-if="instrument.record" @click="clearRecord(instrument)"/>
         </div>
       </div>
+
+      <!-- Buttons -->
       <div class="app__buttons">
-        <div class="app__record-button-wrapper">
-          <button v-if="!recording" class="button button-record" @click="toggleRecording">Record</button>
-          <button v-else class="button button-stop" @click="toggleRecording">Stop</button>
-        </div>
-        <div class="app__play-button-wrapper">
-          <button class="button button-play">Play</button>
-        </div>
-        <div class="app__save-button-wrapper">
-          <button class="button button-save">Save</button>
-        </div>
+        <button v-if="!recording" class="app__button app__button_record" @click="record">Record</button>
+        <button v-else class="app__button app__button_stop" @click="stop">Stop</button>
+        <button class="app__button app__button_play" @click="play">Play</button>
+        <button class="app__button app__button_save" @click="save">Save</button>
       </div>
+
     </div>
-    <div class="app__nav" style="position: absolute; right: 0; top: 0; display: flex; flex-direction: column;">
-      <button class="app__nav-button" @click="openInstructions">Instructions</button>
-      <button class="app__nav-button" @click="helperTextVisible = instructionsVisible ? helperTextVisible : !helperTextVisible">Keyboard</button>
+
+    <!-- Navigation -->
+    <div class="app__navigation" :class="{ 'app__navigation--blur': instructionsVisible }">
+      <button class="app__navigation-button" @click="openInstructions">Instructions</button>
+      <button class="app__navigation-button" @click="helperTextVisible = !helperTextVisible">Keyboard</button>
     </div>
-    <instructions
-      v-if="instructionsVisible"
-      @close="closeInstructions">
-    </instructions>
+
+    <!-- Instructions -->
+    <instructions v-if="instructionsVisible" @close="closeInstructions"></instructions>
+
   </div>
 </template>
 
@@ -253,6 +231,8 @@ import Instructions from './Instructions.vue'
 export default {
   data () {
     return {
+      helperTextVisible: false,
+      instructionsVisible: false,
       keys: {
         white: [
           { pitch: 60, code: 81, name: 'Q', on: false },
@@ -287,16 +267,17 @@ export default {
         ]
       },
       instruments: [
-        { name: 'piano', recorded: true, selected: false },
-        { name: 'trumpet', recorded: true, selected: false },
-        { name: 'clarinet_recorded', recorded: false, selected: false },
-        { name: 'guitar_selected', recorded: false, selected: false },
-        { name: 'violin', recorded: true, selected: false },
-        { name: 'saxophone', recorded: false, selected: false }
+        { channel: 0, name: 'piano', soundfont: 'acoustic_grand_piano', record: null },
+        { channel: 1, name: 'trumpet', soundfont: 'trumpet', record: null },
+        { channel: 2, name: 'clarinet', soundfont: 'clarinet', record: null },
+        { channel: 3, name: 'guitar', soundfont: 'guitar_harmonics', record: null },
+        { channel: 4, name: 'violin', soundfont: 'violin', record: null },
+        { channel: 5, name: 'saxophone', soundfont: 'soprano_sax', record: null }
       ],
-      helperTextVisible: false,
-      instructionsVisible: false,
-      recording: false
+      selectedInstrument: null,
+      recording: false,
+      NOTE_ON: 0,
+      NOTE_OFF: 1
     }
   },
   computed: {
@@ -306,6 +287,7 @@ export default {
   },
   created () {
     this.setupMIDIPlugin()
+    this.selectedInstrument = this.instruments[0]
   },
   mounted () {
     this.$nextTick(() => {
@@ -320,10 +302,13 @@ export default {
   methods: {
     setupMIDIPlugin () {
       MIDI.loadPlugin({
-        soundfontUrl: "/assets/soundfonts/",
-        instrument: "acoustic_grand_piano",
+        soundfontUrl: '/assets/soundfonts/',
+        instruments: this.instruments.map(instrument => instrument.soundfont),
         onsuccess: () => {
-          MIDI.setVolume(0, 127)
+          this.instruments.forEach(instrument => {
+            MIDI.setVolume(instrument.channel, 127)
+            MIDI.programChange(instrument.channel, MIDI.GM.byName[instrument.soundfont].number)
+          })
         }
       })
     },
@@ -335,34 +320,48 @@ export default {
       return keys.length > 0 ? keys[0] : null
     },
     mousedown (key) {
-      key.on = true
-      this.noteOn(key.pitch)
+      if (this.selectedInstrument) {
+        key.on = true
+        this.noteOn(this.selectedInstrument.channel, key.pitch)
+      }
     },
     mouseup (key) {
-      key.on = false
-      this.noteOff(key.pitch)
+      if (this.selectedInstrument) {
+        key.on = false
+        this.noteOff(this.selectedInstrument.channel, key.pitch)
+      }
     },
     keydown (event) {
-      let key = this.getKey(event.keyCode)
-      if (key && !key.on) {
-        key.on = true
-        this.noteOn(key.pitch)
+      if (this.selectedInstrument) {
+        let key = this.getKey(event.keyCode)
+        if (key && !key.on) {
+          key.on = true
+          this.noteOn(this.selectedInstrument.channel, key.pitch)
+        }
       }
     },
     keyup (event) {
-      let key = this.getKey(event.keyCode)
-      if (key) {
-        key.on = false
-        this.noteOff(key.pitch)
+      if (this.selectedInstrument) {
+        let key = this.getKey(event.keyCode)
+        if (key) {
+          key.on = false
+          this.noteOff(this.selectedInstrument.channel, key.pitch)
+        }
       }
     },
-    noteOn (pitch) {
+    noteOn (channel, pitch) {
       // channel id, note number, velocity, delay
-      MIDI.noteOn(0, pitch, 127, 0)
+      MIDI.noteOn(channel, pitch, 127, 0)
+      if (this.recording) {
+        this.recordNote(this.NOTE_ON, Date.now(), pitch)
+      }
     },
-    noteOff (pitch) {
+    noteOff (channel, pitch) {
       // channel id, note number, delay
-      MIDI.noteOff(0, pitch, 0.75)
+      MIDI.noteOff(channel, pitch, 0.75)
+      if (this.recording) {
+        this.recordNote(this.NOTE_OFF, Date.now(), pitch)
+      }
     },
     openInstructions () {
       this.instructionsVisible = true
@@ -372,13 +371,71 @@ export default {
         this.instructionsVisible = false
       }, time * 1000)
     },
-    toggleRecording () {
-      if (this.recording) {
-        this.recording = false;
+    getInstrumentImageName (instrument) {
+      let suffix = ''
+
+      if (this.selectedInstrument && this.selectedInstrument.name === instrument.name) {
+        suffix = '_selected'
+      } else if (instrument.record) {
+        suffix = '_recorded'
       }
-      else {
-        this.recording = true;
+
+      return instrument.name + suffix
+    },
+    toggleInstrumentSelection (instrument) {
+      if (this.selectedInstrument && this.selectedInstrument.name === instrument.name) {
+        this.selectedInstrument = null
+      } else {
+        this.selectedInstrument = instrument
       }
+    },
+    clearRecord (instrument) {
+      instrument.record = null
+    },
+    record () {
+      this.selectedInstrument.record = { previousTime: Date.now(), data: [] }
+      this.recording = true
+    },
+    stop () {
+      this.recording = false
+    },
+    play () {
+      let channel = this.selectedInstrument.channel
+      let data = this.selectedInstrument.record.data
+
+      let currentTime = 0
+
+      for (let i = 0; i < data.length; i++) {
+        let note = data[i]
+        currentTime += note.elapsedTime
+
+        setTimeout(() => {
+          switch (note.event) {
+            case this.NOTE_ON:
+              this.noteOn(channel, note.pitch)
+              break
+            case this.NOTE_OFF:
+              this.noteOff(channel, note.pitch)
+              break
+          }
+        }, currentTime)
+      }
+    },
+    save () {
+      axios.post('/midi', this.selectedInstrument.record)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => console.log(error))
+    },
+    recordNote (event, currentTime, pitch) {
+      let record = this.selectedInstrument.record
+      record.data.push({
+        event: event,
+        elapsedTime: currentTime - record.previousTime,
+        pitch: pitch
+      })
+      record.previousTime = currentTime
     }
   },
   components: {
