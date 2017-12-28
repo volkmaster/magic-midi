@@ -45,8 +45,12 @@
 .instructions__close-img {
   width  : 25px;
   heigth : auto;
+  margin : 10px 10px 0 0;
 
-  &:hover { cursor: pointer; }
+  &:hover {
+    filter : brightness(50%);
+    cursor : pointer;
+  }
 }
 
 .instructions__content {
@@ -103,7 +107,7 @@
         You can play the music by clicking the keys on the piano keyboard or by using the letters on the computer keyboard. For displaying the associated letters click <span class="instuctions__highlight instuctions__highlight--keyboard">Keyboard</span> .
       <p>
       <p>
-        For choosing an instrument click on the instrument icon. The selected instrument is marked with an orange border. You can have one recording for each instrument. The recording can be deleted by clicking <span><img class="instuctions__highlight instructions__highlight--delete" src="/assets/images/delete-gray.svg"/></span> .
+        For choosing an instrument click on the instrument icon. The selected instrument is marked with an orange border. You can have one recording for each instrument. The recording can be deleted by clicking <span><img class="instuctions__highlight instructions__highlight--delete" src="/assets/images/delete.svg"/></span> .
       </p>
       <p>
         You can record melody by clicking <span class="instuctions__highlight instuctions__highlight--record">Record</span> . Click <span class="instuctions__highlight instuctions__highlight--stop">Stop</span> to stop recording.
@@ -112,7 +116,7 @@
         For playing the recordings select the ones you want to play by clicking the checkbox under the instrument icon and click <span class="instuctions__highlight instuctions__highlight--play">Play</span> . You can also play the previously recorded melodies and record a new one at the same time.
       </p>
       <p>
-        For downloading select the recordings of deifferent instruments that you want to include in the downloaded recording by selecting the checkbox under the instrument and click <span class="instuctions__highlight instuctions__highlight--save">Save</span> .
+        For downloading select the recordings of different instruments that you want to include in the downloaded recording by selecting the checkbox under the instrument and click <span class="instuctions__highlight instuctions__highlight--save">Save</span> .
       </p>
     </div>
 

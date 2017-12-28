@@ -11,6 +11,15 @@
   overflow         : hidden;
 }
 
+.app__loader {
+  position  : absolute;
+  top       : 50%;
+  left      : 50%;
+  transform : translate(-50%, -50%);
+  width     : 100px;
+  height    : 100px;
+}
+
 .app__navigation {
   position       : absolute;
   right          : 0;
@@ -18,6 +27,12 @@
   padding        : 10px;
   display        : flex;
   flex-direction : column;
+  animation      : fade-in 1s linear 0s forwards;
+
+  @keyframes fade-in {
+    from { opacity : 0; }
+    to   { opacity : 1; }
+  }
 }
 
 .app__navigation-button {
@@ -35,6 +50,15 @@
     border           : 2px solid @light-gray;
     background-color : @light-gray;
     cursor           : pointer;
+  }
+}
+
+.app__content {
+  animation: fade-in 1s linear 0s forwards;
+
+  @keyframes fade-in {
+    from { opacity : 0; }
+    to   { opacity : 1; }
   }
 }
 
@@ -92,8 +116,9 @@
 }
 
 .app__instruments {
-  // height  : calc(~'100vh - 30vw');
-  padding         : 20px 10vw 10px 10vw;
+  width           : 100%;
+  height          : 150px;
+  margin          : 20px 0;
   display         : flex;
   justify-content : center;
 }
@@ -105,22 +130,53 @@
   align-items     : center;
 }
 
-.app__img, .app__checkbox { cursor: pointer; }
+.app__img { cursor: pointer; }
+
+.app__img--disabled { cursor: not-allowed; }
 
 .app__img--instrument {
-  max-width  : calc(~'(100vh - 30vw - 30px) / 4 * 1.2');;
-  max-height : calc(~'(100vh - 30vw - 30px) / 4');;
-  object-fit : contain;
+  width         : 100px;
+  height        : 100px;
+  margin        : 0 10px 10px 10px;
+  border        : 4px solid transparent;
+  border-radius : 15px;
+  object-fit    : contain;
+
+  &:hover:not(.app__img--disabled)                          { border-color : @silver;        }
+  &.app__img--instrument--selected                          { border-color : @dark-orange;   }
+  &.app__img--instrument--recorded:not(.app__img--disabled) { border-color : @success-green; }
+}
+
+.app__instrument-controls { display: flex; }
+
+.app__img--checkbox {
+  width             : 25px;
+  height            : 25px;
+  margin-right      : 10px;
+  padding           : 4px;
+  border            : 1px solid @very-light-gray;
+  border-radius     : 5px;
+  background-origin : content-box;
+  background-repeat : no-repeat;
+  background-size   : contain;
+
+  &:hover:not(.app__img--disabled) { background-color: @dark-gray; }
+
+  &.app__img--checkbox--checked { background-image: url('/assets/images/check.svg'); }
 }
 
 .app__img--delete {
-  width         : 18px;
-  height        : 18px;
-  padding       : 4px;
-  border        : 1px solid @very-light-gray;
-  border-radius : 5px;
+  width             : 25px;
+  height            : 25px;
+  padding           : 5px;
+  border            : 1px solid @very-light-gray;
+  border-radius     : 5px;
+  background-image  : url('/assets/images/delete.svg');
+  background-origin : content-box;
+  background-repeat : no-repeat;
+  background-size   : contain;
 
-  &:hover { background-color: @dark-gray; }
+  &:hover:not(.app__img--disabled) { background-color: @dark-gray; }
 }
 
 .app__buttons {
@@ -129,54 +185,76 @@
 }
 
 .app__button {
-  width            : 100px;
-  padding          : 10px;
-  border           : 2px solid @yellow;
-  border-radius    : 5px;
-  font-family      : @magic-midi-font;
-  font-size        : 30px;
-  background-color : @yellow;
-  color            : @gray;
-  cursor           : pointer;
+  width         : 100px;
+  padding       : 10px;
+  border-width  : 2px;
+  border-style  : solid;
+  border-radius : 5px;
+  font-family   : @magic-midi-font;
+  font-size     : 30px;
+  cursor        : pointer;
+  transition    : background-color 0.1s linear, color 0.1s linear;
 
-  &:hover {
-    border           : 2px solid @dark-yellow;
-    background-color : @dark-yellow;
+  &:disabled {
+    border-color     : @very-light-gray;
+    background-color : @very-light-gray;
+    color            : @gray;
+    cursor           : not-allowed;
   }
 }
 
 .app__button_record {
-  margin-right     : 10px;
-  border           : 2px solid @orange;
+  border-color     : @orange;
   background-color : @orange;
 
-  &:hover {
-    border           : 2px solid @dark-orange;
+  &:hover:not([disabled]) {
+    border-color     : @dark-orange;
     background-color : @dark-orange;
   }
 }
 
 .app__button_stop {
-  margin-right     : 10px;
-  border           : 2px solid @red;
+  border-color     : @red;
   background-color : @red;
 
-  &:hover {
-    border           : 2px solid @dark-red;
+  &:hover:not([disabled]) {
+    border-color     : @dark-red;
     background-color : @dark-red;
   }
 }
 
-.app__button_play { margin: 0 10px; }
+.app__button_play {
+  margin           : 0 20px;
+  border-color     : @yellow;
+  background-color : @yellow;
+  color            : @gray;
 
-.app__button_save { margin-left: 10px; }
+  &:hover:not([disabled]) {
+    border-color     : @dark-yellow;
+    background-color : @dark-yellow;
+  }
+}
+
+.app__button_save {
+  border-color     : @yellow;
+  background-color : @yellow;
+  color            : @gray;
+
+  &:hover:not([disabled]) {
+    border-color     : @dark-yellow;
+    background-color : @dark-yellow;
+  }
+}
 </style>
 
 <template>
   <div class="app">
 
+    <!-- Loader -->
+    <img class="app__loader" src="/assets/images/loader.svg" v-if="loading"/>
+
     <!-- Content -->
-    <div class="app__content" :class="{ 'app__content--blur': instructionsVisible }">
+    <div class="app__content" :class="{ 'app__content--blur': instructionsVisible }" v-else>
 
       <!-- Logo -->
       <div class="app__header">
@@ -197,24 +275,26 @@
       <!-- Instruments -->
       <div class="app__instruments">
         <div class="app__instrument" v-for="instrument in instruments">
-          <img class="app__img app__img--instrument" :src="'/assets/images/' + getInstrumentImageName(instrument) + '.svg'" @click="toggleInstrumentSelection(instrument)"/>
-          <input class="app__checkbox" type="checkbox" :name="instrument.name" v-if="instrument.record">
-          <img class="app__img app__img--delete" src="/assets/images/delete-gray.svg" v-if="instrument.record" @click="clearRecord(instrument)"/>
+          <img class="app__img app__img--instrument" :class="{ 'app__img--disabled': recording || playing || saving, 'app__img--instrument--selected': instrument.name === selectedInstrument.name, 'app__img--instrument--recorded': instrument.name !== selectedInstrument.name && instrument.record !== null }" :src="'/assets/images/' + instrument.name + '.svg'" @click="selectInstrument(instrument)"/>
+          <div class="app__instrument-controls" v-if="instrument.record">
+            <div class="app__img app__img--checkbox" :class="{ 'app__img--disabled': recording || playing || saving, 'app__img--checkbox--checked': instrument.checked }" @click="instrument.checked = !instrument.checked"></div>
+            <div class="app__img app__img--delete" :class="{ 'app__img--disabled': recording || playing || saving }" @click="clearRecord(instrument)"></div>
+          </div>
         </div>
       </div>
 
       <!-- Buttons -->
       <div class="app__buttons">
-        <button v-if="!recording" class="app__button app__button_record" @click="record">Record</button>
-        <button v-else class="app__button app__button_stop" @click="stop">Stop</button>
-        <button class="app__button app__button_play" @click="play">Play</button>
-        <button class="app__button app__button_save" @click="save">Save</button>
+        <button class="app__button app__button_record" @click="record" v-if="!recording" :disabled="selectedInstrument.record">Record</button>
+        <button class="app__button app__button_stop" @click="stop" v-else>Stop</button>
+        <button class="app__button app__button_play" @click="play" :disabled="saving || !hasCheckedInstruments">Play</button>
+        <button class="app__button app__button_save" @click="save" :disabled="recording || playing || !hasCheckedInstruments">Save</button>
       </div>
 
     </div>
 
     <!-- Navigation -->
-    <div class="app__navigation" :class="{ 'app__navigation--blur': instructionsVisible }">
+    <div class="app__navigation" :class="{ 'app__navigation--blur': instructionsVisible }" v-show="!loading">
       <button class="app__navigation-button" @click="openInstructions">Instructions</button>
       <button class="app__navigation-button" @click="helperTextVisible = !helperTextVisible">Keyboard</button>
     </div>
@@ -226,13 +306,16 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import Instructions from './Instructions.vue'
 
 export default {
   data () {
     return {
-      helperTextVisible: false,
+      loading: true,
+      loadingDelay: 2000,
       instructionsVisible: false,
+      helperTextVisible: false,
       keys: {
         white: [
           { pitch: 60, code: 81, name: 'Q', on: false },
@@ -267,22 +350,37 @@ export default {
         ]
       },
       instruments: [
-        { channel: 0, name: 'piano', soundfont: 'acoustic_grand_piano', record: null },
-        { channel: 1, name: 'trumpet', soundfont: 'trumpet', record: null },
-        { channel: 2, name: 'clarinet', soundfont: 'clarinet', record: null },
-        { channel: 3, name: 'guitar', soundfont: 'guitar_harmonics', record: null },
-        { channel: 4, name: 'violin', soundfont: 'violin', record: null },
-        { channel: 5, name: 'saxophone', soundfont: 'soprano_sax', record: null }
+        { channel: 0, name: 'piano', soundfont: 'acoustic_grand_piano', program: MIDI.GM.byName['acoustic_grand_piano'].number, record: null, checked: false },
+        { channel: 1, name: 'trumpet', soundfont: 'trumpet', program: MIDI.GM.byName['trumpet'].number, record: null, checked: false },
+        { channel: 2, name: 'clarinet', soundfont: 'clarinet', program: MIDI.GM.byName['clarinet'].number, record: null, checked: false },
+        { channel: 3, name: 'guitar', soundfont: 'acoustic_guitar_nylon', program: MIDI.GM.byName['acoustic_guitar_nylon'].number, record: null, checked: false },
+        { channel: 4, name: 'violin', soundfont: 'violin', program: MIDI.GM.byName['violin'].number, record: null, checked: false },
+        { channel: 5, name: 'saxophone', soundfont: 'soprano_sax', program: MIDI.GM.byName['soprano_sax'].number, record: null, checked: false }
       ],
+      INSTRUMENT_VOLUME: 127,
+      NOTE_ON: 0,
+      NOTE_OFF: 1,
+      NOTE_VELOCITY: 64,
+      NOTE_DELAY: 0,
       selectedInstrument: null,
       recording: false,
-      NOTE_ON: 0,
-      NOTE_OFF: 1
+      playing: false,
+      saving: false,
     }
   },
   computed: {
     nKeys () {
       return this.keys.white.length
+    },
+    totalDuration () {
+      return Math.max(
+        this.instruments
+          .filter(instrument => instrument.checked)
+          .map(instrument => instrument.record.duration)
+      )
+    },
+    hasCheckedInstruments () {
+      return this.instruments.filter(instrument => instrument.checked).length > 0
     }
   },
   created () {
@@ -301,14 +399,19 @@ export default {
   },
   methods: {
     setupMIDIPlugin () {
+      let startTime = Date.now()
+
       MIDI.loadPlugin({
         soundfontUrl: '/assets/soundfonts/',
         instruments: this.instruments.map(instrument => instrument.soundfont),
         onsuccess: () => {
-          this.instruments.forEach(instrument => {
-            MIDI.setVolume(instrument.channel, 127)
-            MIDI.programChange(instrument.channel, MIDI.GM.byName[instrument.soundfont].number)
-          })
+          for (let instrument of this.instruments) {
+            MIDI.setVolume(instrument.channel, this.INSTRUMENT_VOLUME)
+            MIDI.programChange(instrument.channel, instrument.program)
+          }
+          setTimeout(() => {
+            this.loading = false
+          }, this.loadingDelay - (Date.now() - startTime))
         }
       })
     },
@@ -320,48 +423,139 @@ export default {
       return keys.length > 0 ? keys[0] : null
     },
     mousedown (key) {
-      if (this.selectedInstrument) {
+      key.on = true
+      this.noteOn(this.selectedInstrument.channel, key.pitch)
+    },
+    mouseup (key) {
+      key.on = false
+      this.noteOff(this.selectedInstrument.channel, key.pitch)
+    },
+    keydown (event) {
+      let key = this.getKey(event.keyCode)
+      if (key && !key.on) {
         key.on = true
         this.noteOn(this.selectedInstrument.channel, key.pitch)
       }
     },
-    mouseup (key) {
-      if (this.selectedInstrument) {
+    keyup (event) {
+      let key = this.getKey(event.keyCode)
+      if (key) {
         key.on = false
         this.noteOff(this.selectedInstrument.channel, key.pitch)
       }
     },
-    keydown (event) {
-      if (this.selectedInstrument) {
-        let key = this.getKey(event.keyCode)
-        if (key && !key.on) {
-          key.on = true
-          this.noteOn(this.selectedInstrument.channel, key.pitch)
-        }
-      }
-    },
-    keyup (event) {
-      if (this.selectedInstrument) {
-        let key = this.getKey(event.keyCode)
-        if (key) {
-          key.on = false
-          this.noteOff(this.selectedInstrument.channel, key.pitch)
-        }
-      }
-    },
     noteOn (channel, pitch) {
       // channel id, note number, velocity, delay
-      MIDI.noteOn(channel, pitch, 127, 0)
+      MIDI.noteOn(channel, pitch, this.NOTE_VELOCITY, this.NOTE_DELAY)
       if (this.recording) {
-        this.recordNote(this.NOTE_ON, Date.now(), pitch)
+        this.recordNote(channel, this.NOTE_ON, Date.now(), pitch)
       }
     },
     noteOff (channel, pitch) {
       // channel id, note number, delay
-      MIDI.noteOff(channel, pitch, 0.75)
+      MIDI.noteOff(channel, pitch, this.NOTE_DELAY)
       if (this.recording) {
-        this.recordNote(this.NOTE_OFF, Date.now(), pitch)
+        this.recordNote(channel, this.NOTE_OFF, Date.now(), pitch)
       }
+    },
+    recordNote (channel, event, currentTime, pitch) {
+      let record = this.selectedInstrument.record
+
+      record.notes.push({
+        channel: channel,
+        event: event,
+        time: currentTime - record.startTime,
+        pitch: pitch
+      })
+    },
+    selectInstrument (instrument) {
+      if (!this.recording && !this.playing && !this.saving && this.selectedInstrument.name !== instrument.name) {
+        this.selectedInstrument = instrument
+      }
+    },
+    clearRecord (instrument) {
+      if (!this.recording && !this.playing && !this.saving) {
+        instrument.record = null
+      }
+    },
+    record () {
+      this.selectedInstrument.record = {
+        startTime: Date.now(),
+        duration: 0,
+        notes: []
+      }
+      this.recording = true
+    },
+    stop () {
+      let record = this.selectedInstrument.record
+      record.duration = Date.now() - record.startTime
+      this.selectedInstrument.checked = true
+      this.recording = false
+    },
+    play () {
+      this.playing = true
+
+      let notes = this.joinNotes()
+
+      for (let note of notes) {
+        setTimeout(() => {
+          switch (note.event) {
+            case this.NOTE_ON:
+              this.noteOn(note.channel, note.pitch)
+              break
+            case this.NOTE_OFF:
+              this.noteOff(note.channel, note.pitch)
+              break
+          }
+        }, note.time)
+      }
+
+      setTimeout(() => {
+        this.playing = false
+      }, this.totalDuration)
+    },
+    save () {
+      this.saving = true
+
+      let data = {
+        parameters: {
+          NOTE_ON: this.NOTE_ON,
+          NOTE_OFF: this.NOTE_OFF,
+          NOTE_VELOCITY: this.NOTE_VELOCITY
+        },
+        programs: this.instruments.map(instrument => { return { channel: instrument.channel, program: instrument.program } }),
+        notes: _.sortBy(this.joinNotes(), note => note.time)
+      }
+
+      axios.post('/midi', data)
+        .then(response => {
+          let id = response.data.id
+          axios.get('/midi/' + id, { responseType: 'arraybuffer' })
+            .then(response => {
+              this.downloadFile(id + '.mid', response.data, response.headers['content-type'])
+              this.saving = false
+            })
+            .catch(error => {
+              this.saving = false
+              console.log(error)
+            })
+        })
+        .catch(error => {
+          this.saving = false
+          console.log(error)
+        })
+    },
+    downloadFile (filename, data, type) {
+      let blob = new Blob([data], { type: type })
+      let url = window.URL.createObjectURL(blob)
+      let link = document.createElement('a')
+      link.href = url
+      link.download = filename
+      link.click()
+      window.URL.revokeObjectURL(url);
+    },
+    joinNotes () {
+      return [].concat(...this.instruments.filter(instrument => instrument.checked).map(instrument => instrument.record.notes))
     },
     openInstructions () {
       this.instructionsVisible = true
@@ -370,72 +564,6 @@ export default {
       setTimeout(() => {
         this.instructionsVisible = false
       }, time * 1000)
-    },
-    getInstrumentImageName (instrument) {
-      let suffix = ''
-
-      if (this.selectedInstrument && this.selectedInstrument.name === instrument.name) {
-        suffix = '_selected'
-      } else if (instrument.record) {
-        suffix = '_recorded'
-      }
-
-      return instrument.name + suffix
-    },
-    toggleInstrumentSelection (instrument) {
-      if (this.selectedInstrument && this.selectedInstrument.name === instrument.name) {
-        this.selectedInstrument = null
-      } else {
-        this.selectedInstrument = instrument
-      }
-    },
-    clearRecord (instrument) {
-      instrument.record = null
-    },
-    record () {
-      this.selectedInstrument.record = { previousTime: Date.now(), data: [] }
-      this.recording = true
-    },
-    stop () {
-      this.recording = false
-    },
-    play () {
-      let channel = this.selectedInstrument.channel
-      let data = this.selectedInstrument.record.data
-
-      let currentTime = 0
-
-      for (let i = 0; i < data.length; i++) {
-        let note = data[i]
-        currentTime += note.elapsedTime
-
-        setTimeout(() => {
-          switch (note.event) {
-            case this.NOTE_ON:
-              this.noteOn(channel, note.pitch)
-              break
-            case this.NOTE_OFF:
-              this.noteOff(channel, note.pitch)
-              break
-          }
-        }, currentTime)
-      }
-    },
-    save () {
-      axios.post('/midi', this.selectedInstrument.record)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => console.log(error))
-    },
-    recordNote (event, currentTime, pitch) {
-      let record = this.selectedInstrument.record
-      record.data.push({
-        event: event,
-        elapsedTime: currentTime - record.previousTime,
-        pitch: pitch
-      })
-      record.previousTime = currentTime
     }
   },
   components: {
