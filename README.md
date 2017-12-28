@@ -8,6 +8,9 @@
 # install dependencies
 npm install
 
+# run server
+npm run server
+
 # build and watch in development mode
 npm run dev
 
