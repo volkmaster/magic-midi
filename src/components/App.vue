@@ -527,10 +527,10 @@ export default {
         notes: _.sortBy(this.joinNotes(), note => note.time)
       }
 
-      axios.post('/midi', data)
+      axios.post('/api/midi', data)
         .then(response => {
           let id = response.data.id
-          axios.get('/midi/' + id, { responseType: 'arraybuffer' })
+          axios.get('/api/midi/' + id, { responseType: 'arraybuffer' })
             .then(response => {
               this.downloadFile(id + '.mid', response.data, response.headers['content-type'])
               this.saving = false

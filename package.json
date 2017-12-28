@@ -23,8 +23,8 @@
     }
   ],
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
-    "server": "nodemon --watch server.js server.js",
+    "dev": "cross-env NODE_ENV=development PORT=5000 webpack-dev-server --open --hot",
+    "server": "PORT=5000 nodemon --watch server.js server.js",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "postinstall": "npm run build",
     "start": "node server.js"

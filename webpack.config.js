@@ -45,9 +45,16 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"development"',
+        BASE_URL: `"http://localhost:${process.env.PORT}"`
+      }
+    }),
     new webpack.ProvidePlugin({
-        $: "jquery",
-        jQuery: "jquery"
+        $: 'jquery',
+        jQuery: 'jquery',
+        axios: 'axios'
     }),
     new CopyWebpackPlugin([
       {
