@@ -75,13 +75,52 @@
   -webkit-user-select : none;
 }
 
-.app__logo { height: 12vw; }
+.app__logo {
+  .breakpoint-2048(     { height : 250px; });
+  .breakpoint-1920-2048({ height : 225px; });
+  .breakpoint-1680-1920({ height : 190px; });
+  .breakpoint-1440-1680({ height : 160px; });
+  .breakpoint-1280-1440({ height : 150px; });
+  .breakpoint-1024-1280({ height : 130px; });
+  .breakpoint-1024(     { height : 110px; });
+}
+
+.app__svg-wrapper {
+  display         : flex;
+  justify-content : center;
+}
 
 .app__svg {
-  width   : 60vw;
-  height  : 15vw;
-  margin  : 0 20vw;
-  padding : 1px;
+  padding: 1px;
+
+  .breakpoint-2048({
+    width  : 1200px;
+    height : 300px;
+  });
+  .breakpoint-1920-2048({
+    width  : 1000px;
+    height : 250px;
+  });
+  .breakpoint-1680-1920({
+    width  : 960px;
+    height : 240px;
+  });
+  .breakpoint-1440-1680({
+    width  : 800px;
+    height : 200px;
+  });
+  .breakpoint-1280-1440({
+    width  : 640px;
+    height : 160px;
+  });
+  .breakpoint-1024-1280({
+    width  : 600px;
+    height : 150px;
+  });
+  .breakpoint-1024({
+    width  : 520px;
+    height : 130px;
+  });
 }
 
 .app__keyboard {
@@ -124,6 +163,10 @@
   margin          : 20px 0;
   display         : flex;
   justify-content : center;
+
+  .breakpoint-1280-1440({ height : 125px; });
+  .breakpoint-1024-1280({ height : 125px; });
+  .breakpoint-1024(     { height : 125px; });
 }
 
 .app__instrument {
@@ -144,6 +187,19 @@
   border        : 4px solid transparent;
   border-radius : 15px;
   object-fit    : contain;
+
+  .breakpoint-1280-1440({
+    width  : 80px;
+    height : 80px;
+  });
+  .breakpoint-1024-1280({
+    width  : 80px;
+    height : 80px;
+  });
+  .breakpoint-1024({
+    width  : 65px;
+    height : 65px;
+  });
 
   &:hover:not(.app__img--disabled)                          { border-color : @silver;        }
   &.app__img--instrument--selected                          { border-color : @dark-orange;   }
@@ -265,15 +321,17 @@
       </div>
 
       <!-- Keyboard -->
-      <svg class="app__svg" viewBox="0 0 100 25" preserveAspectRatio="xMidYMid meet">
-        <rect class="app__key app__key--white" :class="{ 'app__key--pressed': key.pressed }" :x="(100 / nKeys * index) + '%'" y="0%" :width="(100 / nKeys) + '%'" height="100%" v-for="(key, index) in keys.white" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
-        <rect class="app__key app__key--black" :class="{ 'app__key--pressed': key.pressed }" :x="(100 / nKeys * (0.75 + index)) + '%'" y="0%" :width="(100 / nKeys * 0.5) + '%'" height="50%" v-for="(key, index) in keys.black" v-if="key.pitch !== -1" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
-        <g v-show="helperTextVisible">
-          <text class="app__key-text app__key-text--white" :x="(100 / nKeys * (0.27 + index)) + '%'" y="90%" v-for="(key, index) in keys.white">{{ key.name }}</text>
-          <text class="app__key-text app__key-text--black" :x="(100 / nKeys * (0.88 + index)) + '%'" y="20%" v-for="(key, index) in keys.black" v-if="keys.pitch !== -1">{{ key.name }}</text>
-        </g>
-        <rect class="app__keyboard" x="0%" y="0%" width="100%" height="100%"></rect>
-      </svg>
+      <div class="app__svg-wrapper">
+        <svg class="app__svg" viewBox="0 0 100 25" preserveAspectRatio="xMidYMid meet">
+          <rect class="app__key app__key--white" :class="{ 'app__key--pressed': key.pressed }" :x="(100 / nKeys * index) + '%'" y="0%" :width="(100 / nKeys) + '%'" height="100%" v-for="(key, index) in keys.white" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
+          <rect class="app__key app__key--black" :class="{ 'app__key--pressed': key.pressed }" :x="(100 / nKeys * (0.75 + index)) + '%'" y="0%" :width="(100 / nKeys * 0.5) + '%'" height="50%" v-for="(key, index) in keys.black" v-if="key.pitch !== -1" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
+          <g v-show="helperTextVisible">
+            <text class="app__key-text app__key-text--white" :x="(100 / nKeys * (0.27 + index)) + '%'" y="90%" v-for="(key, index) in keys.white">{{ key.name }}</text>
+            <text class="app__key-text app__key-text--black" :x="(100 / nKeys * (0.88 + index)) + '%'" y="20%" v-for="(key, index) in keys.black" v-if="keys.pitch !== -1">{{ key.name }}</text>
+          </g>
+          <rect class="app__keyboard" x="0%" y="0%" width="100%" height="100%"></rect>
+        </svg>
+      </div>
 
       <!-- Instruments -->
       <div class="app__instruments">

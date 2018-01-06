@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './components/App.vue'
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV !== 'production') {
   axios.defaults.baseURL = process.env.BASE_URL
 }
 axios.defaults.headers.common = {

@@ -1,7 +1,7 @@
 <style lang="less" scoped>
 @import (reference) '../main';
 
-@instructions-width: 40vw;
+@instructions-width: 33vw;
 
 .instructions {
   position         : absolute;

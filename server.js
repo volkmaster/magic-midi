@@ -111,5 +111,5 @@ app.post('/api/midi', function (req, res) {
 })
 
 // run server
-var port = process.env.PORT || 5000
+var port = process.env.PORT
 app.listen(port, () => console.log('Server running on port ' + port + '...'))
