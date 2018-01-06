@@ -264,8 +264,8 @@
 
       <!-- Keyboard -->
       <svg class="app__svg" width="60vw" height="15vw" viewBox="0 0 100 25" preserveAspectRatio="xMidYMid meet">
-        <rect class="app__key app__key--white" :class="{ 'app__key--pressed': isKeyOn(key) }" :x="(100 / nKeys * index) + '%'" y="0%" :width="(100 / nKeys) + '%'" height="100%" v-for="(key, index) in keys.white" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
-        <rect class="app__key app__key--black" :class="{ 'app__key--pressed': isKeyOn(key) }" :x="(100 / nKeys * (0.75 + index)) + '%'" y="0%" :width="(100 / nKeys * 0.5) + '%'" height="50%" v-for="(key, index) in keys.black" v-if="key.pitch !== -1" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
+        <rect class="app__key app__key--white" :class="{ 'app__key--pressed': key.pressed }" :x="(100 / nKeys * index) + '%'" y="0%" :width="(100 / nKeys) + '%'" height="100%" v-for="(key, index) in keys.white" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
+        <rect class="app__key app__key--black" :class="{ 'app__key--pressed': key.pressed }" :x="(100 / nKeys * (0.75 + index)) + '%'" y="0%" :width="(100 / nKeys * 0.5) + '%'" height="50%" v-for="(key, index) in keys.black" v-if="key.pitch !== -1" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
         <g v-show="helperTextVisible">
           <text class="app__key-text app__key-text--white" :x="(100 / nKeys * (0.27 + index)) + '%'" y="90%" v-for="(key, index) in keys.white">{{ key.name }}</text>
           <text class="app__key-text app__key-text--black" :x="(100 / nKeys * (0.88 + index)) + '%'" y="20%" v-for="(key, index) in keys.black" v-if="keys.pitch !== -1">{{ key.name }}</text>
@@ -286,9 +286,10 @@
 
       <!-- Buttons -->
       <div class="app__buttons">
-        <button class="app__button app__button_record" @click="record" v-if="!recording" :disabled="selectedInstrument.record">Record</button>
-        <button class="app__button app__button_stop" @click="stop" v-else>Stop</button>
-        <button class="app__button app__button_play" @click="play" :disabled="saving || !hasCheckedInstruments">Play</button>
+        <button class="app__button app__button_record" @click="startRecording" v-if="!recording" :disabled="saving || selectedInstrument.record">Record</button>
+        <button class="app__button app__button_stop" @click="stopRecording" v-else>Stop</button>
+        <button class="app__button app__button_play" @click="startPlaying" v-if="!playing" :disabled="saving || !hasCheckedInstruments">Play</button>
+        <button class="app__button app__button_play" @click="stopPlaying" v-else>Stop</button>
         <button class="app__button app__button_save" @click="save" :disabled="recording || playing || !hasCheckedInstruments">Save</button>
       </div>
 
@@ -318,35 +319,35 @@ export default {
       helperTextVisible: false,
       keys: {
         white: [
-          { pitch: 60, code: 81, name: 'Q' },
-          { pitch: 62, code: 87, name: 'W' },
-          { pitch: 64, code: 69, name: 'E' },
-          { pitch: 65, code: 82, name: 'R' },
-          { pitch: 67, code: 84, name: 'T' },
-          { pitch: 69, code: 89, name: 'Y' },
-          { pitch: 71, code: 85, name: 'U' },
-          { pitch: 72, code: 90, name: 'Z' },
-          { pitch: 74, code: 88, name: 'X' },
-          { pitch: 76, code: 67, name: 'C' },
-          { pitch: 77, code: 86, name: 'V' },
-          { pitch: 79, code: 66, name: 'B' },
-          { pitch: 81, code: 78, name: 'N' },
-          { pitch: 83, code: 77, name: 'M' }
+          { pitch: 60, code: 81, name: 'Q', pressed: false },
+          { pitch: 62, code: 87, name: 'W', pressed: false },
+          { pitch: 64, code: 69, name: 'E', pressed: false },
+          { pitch: 65, code: 82, name: 'R', pressed: false },
+          { pitch: 67, code: 84, name: 'T', pressed: false },
+          { pitch: 69, code: 89, name: 'Y', pressed: false },
+          { pitch: 71, code: 85, name: 'U', pressed: false },
+          { pitch: 72, code: 90, name: 'Z', pressed: false },
+          { pitch: 74, code: 88, name: 'X', pressed: false },
+          { pitch: 76, code: 67, name: 'C', pressed: false },
+          { pitch: 77, code: 86, name: 'V', pressed: false },
+          { pitch: 79, code: 66, name: 'B', pressed: false },
+          { pitch: 81, code: 78, name: 'N', pressed: false },
+          { pitch: 83, code: 77, name: 'M', pressed: false }
         ],
         black: [
-          { pitch: 61, code: 50, name: '2' },
-          { pitch: 63, code: 51, name: '3' },
+          { pitch: 61, code: 50, name: '2', pressed: false },
+          { pitch: 63, code: 51, name: '3', pressed: false },
           { pitch: -1, code: -1 },
-          { pitch: 66, code: 53, name: '5' },
-          { pitch: 68, code: 54, name: '6' },
-          { pitch: 70, code: 55, name: '7' },
+          { pitch: 66, code: 53, name: '5', pressed: false },
+          { pitch: 68, code: 54, name: '6', pressed: false },
+          { pitch: 70, code: 55, name: '7', pressed: false },
           { pitch: -1, code: -1 },
-          { pitch: 73, code: 83, name: 'S' },
-          { pitch: 75, code: 68, name: 'D' },
+          { pitch: 73, code: 83, name: 'S', pressed: false },
+          { pitch: 75, code: 68, name: 'D', pressed: false },
           { pitch: -1, code: -1 },
-          { pitch: 78, code: 71, name: 'G' },
-          { pitch: 80, code: 72, name: 'H' },
-          { pitch: 82, code: 74, name: 'J' }
+          { pitch: 78, code: 71, name: 'G', pressed: false },
+          { pitch: 80, code: 72, name: 'H', pressed: false },
+          { pitch: 82, code: 74, name: 'J', pressed: false }
         ]
       },
       instruments: [
@@ -364,9 +365,11 @@ export default {
       NOTE_DELAY: 0,
       activeChannelKeys: {},
       selectedInstrument: null,
+      noteTimeoutIds: [],
+      playingTimeoutId: -1,
       recording: false,
       playing: false,
-      saving: false,
+      saving: false
     }
   },
   computed: {
@@ -375,7 +378,7 @@ export default {
     },
     totalDuration () {
       return Math.max(
-        this.instruments
+        ...this.instruments
           .filter(instrument => instrument.checked)
           .map(instrument => instrument.record.duration)
       )
@@ -401,13 +404,13 @@ export default {
   },
   methods: {
     setupMIDIPlugin () {
-      let startTime = Date.now()
+      const startTime = Date.now()
 
       MIDI.loadPlugin({
         soundfontUrl: '/assets/soundfonts/',
         instruments: this.instruments.map(instrument => instrument.soundfont),
         onsuccess: () => {
-          for (let instrument of this.instruments) {
+          for (const instrument of this.instruments) {
             MIDI.setVolume(instrument.channel, this.INSTRUMENT_VOLUME)
             MIDI.programChange(instrument.channel, instrument.program)
           }
@@ -418,39 +421,40 @@ export default {
       })
     },
     setupChannelKeys () {
-      let channels = {}
-      for (let instrument of this.instruments) {
+      const channels = {}
+      for (const instrument of this.instruments) {
         channels[instrument.channel] = false
       }
 
-      let keys = [].concat(this.keys.black, this.keys.white)
-      for (let key of keys) {
+      const keys = [].concat(this.keys.black, this.keys.white)
+      for (const key of keys) {
         if (key.pitch !== -1) {
           this.activeChannelKeys[key.pitch] = Object.assign({}, channels)
         }
       }
     },
     getKey (keyCode) {
-      let keys = [
+      const keys = [
         ...this.keys.white.filter(key => key.code === keyCode),
         ...this.keys.black.filter(key => key.code === keyCode)
       ]
       return keys.length > 0 ? keys[0] : null
     },
     isKeyOn (key) {
-      let pitch = key.pitch
-      let channel = this.selectedInstrument.channel
+      const pitch = key.pitch
+      const channel = this.selectedInstrument.channel
       return this.activeChannelKeys[pitch][channel]
     },
     setKeyState (key, state) {
-      let pitch = key.pitch
-      let channel = this.selectedInstrument.channel
+      const pitch = key.pitch
+      const channel = this.selectedInstrument.channel
       this.activeChannelKeys[pitch][channel] = state
+      key.pressed = state
     },
     mousedown (key) {
       this.setKeyState(key, true)
-      let pitch = key.pitch
-      let channel = this.selectedInstrument.channel
+      const pitch = key.pitch
+      const channel = this.selectedInstrument.channel
       this.noteOn(channel, pitch)
       if (this.recording) {
         this.recordNote(channel, this.NOTE_ON, Date.now(), pitch)
@@ -458,19 +462,19 @@ export default {
     },
     mouseup (key) {
       this.setKeyState(key, false)
-      let pitch = key.pitch
-      let channel = this.selectedInstrument.channel
+      const pitch = key.pitch
+      const channel = this.selectedInstrument.channel
       this.noteOff(channel, pitch)
       if (this.recording) {
         this.recordNote(channel, this.NOTE_OFF, Date.now(), pitch)
       }
     },
     keydown (event) {
-      let key = this.getKey(event.keyCode)
+      const key = this.getKey(event.keyCode)
       if (key && !this.isKeyOn(key)) {
         this.setKeyState(key, true)
-        let pitch = key.pitch
-        let channel = this.selectedInstrument.channel
+        const pitch = key.pitch
+        const channel = this.selectedInstrument.channel
         this.noteOn(channel, pitch)
         if (this.recording) {
           this.recordNote(channel, this.NOTE_ON, Date.now(), pitch)
@@ -478,11 +482,11 @@ export default {
       }
     },
     keyup (event) {
-      let key = this.getKey(event.keyCode)
+      const key = this.getKey(event.keyCode)
       if (key && this.isKeyOn(key)) {
         this.setKeyState(key, false)
-        let pitch = key.pitch
-        let channel = this.selectedInstrument.channel
+        const pitch = key.pitch
+        const channel = this.selectedInstrument.channel
         this.noteOff(channel, pitch)
         if (this.recording) {
           this.recordNote(channel, this.NOTE_OFF, Date.now(), pitch)
@@ -498,7 +502,7 @@ export default {
       MIDI.noteOff(channel, pitch, this.NOTE_DELAY)
     },
     recordNote (channel, event, currentTime, pitch) {
-      let record = this.selectedInstrument.record
+      const record = this.selectedInstrument.record
 
       record.notes.push({
         channel: channel,
@@ -523,27 +527,34 @@ export default {
         instrument.checked = false
       }
     },
-    record () {
+    startRecording () {
       this.selectedInstrument.record = {
         startTime: Date.now(),
         duration: 0,
         notes: []
       }
+      if (this.hasCheckedInstruments) {
+        this.startPlaying()
+      }
       this.recording = true
     },
-    stop () {
-      let record = this.selectedInstrument.record
+    stopRecording () {
+      const record = this.selectedInstrument.record
       record.duration = Date.now() - record.startTime
       this.selectedInstrument.checked = true
       this.recording = false
+      if (this.playing) {
+        this.stopPlaying()
+      }
     },
-    play () {
+    startPlaying () {
       this.playing = true
+      this.noteTimeoutIds = []
 
-      let notes = this.joinNotes()
+      const notes = this.joinNotes()
 
-      for (let note of notes) {
-        setTimeout(() => {
+      for (const note of notes) {
+        const timeoutId = setTimeout(() => {
           switch (note.event) {
             case this.NOTE_ON:
               this.noteOn(note.channel, note.pitch)
@@ -553,16 +564,24 @@ export default {
               break
           }
         }, note.time)
+        this.noteTimeoutIds.push(timeoutId)
       }
 
-      setTimeout(() => {
+      this.playingTimeoutId = setTimeout(() => {
         this.playing = false
       }, this.totalDuration)
+    },
+    stopPlaying () {
+      for (const timeoutId of this.noteTimeoutIds) {
+        clearTimeout(timeoutId)
+      }
+      clearTimeout(this.playingTimeoutId)
+      this.playing = false
     },
     save () {
       this.saving = true
 
-      let data = {
+      const data = {
         parameters: {
           NOTE_ON: this.NOTE_ON,
           NOTE_OFF: this.NOTE_OFF,
@@ -574,7 +593,7 @@ export default {
 
       axios.post('/api/midi', data)
         .then(response => {
-          let id = response.data.id
+          const id = response.data.id
           axios.get('/api/midi/' + id, { responseType: 'arraybuffer' })
             .then(response => {
               this.downloadFile(id + '.mid', response.data, response.headers['content-type'])
@@ -591,13 +610,13 @@ export default {
         })
     },
     downloadFile (filename, data, type) {
-      let blob = new Blob([data], { type: type })
-      let url = window.URL.createObjectURL(blob)
-      let link = document.createElement('a')
+      const blob = new Blob([data], { type: type })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
       link.href = url
       link.download = filename
       link.click()
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(url)
     },
     joinNotes () {
       return [].concat(...this.instruments.filter(instrument => instrument.checked).map(instrument => instrument.record.notes))

@@ -1,10 +1,12 @@
 <style lang="less" scoped>
 @import (reference) '../main';
 
+@instructions-width: 40vw;
+
 .instructions {
   position         : absolute;
   top              : 0;
-  width            : 30vw;
+  width            : @instructions-width;
   height           : 100vh;
   padding          : 10px;
   background-color : @dark-gray;
@@ -14,7 +16,7 @@
   animation: open 0.2s ease-out 0s forwards;
 
   @keyframes open {
-    from { left : -30vw; }
+    from { left : -@instructions-width; }
     to   { left : 0;     }
   }
 }
@@ -24,7 +26,7 @@
 
   @keyframes close {
     from { left : 0vw;   }
-    to   { left : -30vw; }
+    to   { left : -@instructions-width; }
   }
 }
 
@@ -116,7 +118,7 @@
         For playing the recordings select the ones you want to play by clicking the checkbox under the instrument icon and click <span class="instuctions__highlight instuctions__highlight--play">Play</span> . You can also play the previously recorded melodies and record a new one at the same time.
       </p>
       <p>
-        For downloading select the recordings of different instruments that you want to include in the downloaded recording by selecting the checkbox under the instrument and click <span class="instuctions__highlight instuctions__highlight--save">Save</span> .
+        For downloading select the recordings of different instruments that you want to include in the midi file by selecting the checkboxes under the desired instruments and click <span class="instuctions__highlight instuctions__highlight--save">Save</span> .
       </p>
     </div>
 
@@ -130,16 +132,11 @@ export default {
       open: true
     }
   },
-  created () {},
-  mounted () {
-    this.$nextTick(() => {})
-  },
   methods: {
     close () {
       this.open = false
       this.$emit('close', 0.2)
     }
-  },
-  components: {}
+  }
 }
 </script>

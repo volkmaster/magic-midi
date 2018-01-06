@@ -52,10 +52,8 @@ module.exports = {
       }
     }),
     new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-        axios: 'axios',
-        _: 'lodash'
+      _: 'lodash',
+      axios: 'axios'
     }),
     new CopyWebpackPlugin([
       {

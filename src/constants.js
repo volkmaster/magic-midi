@@ -1,1 +1,0 @@
-const factor = 1
