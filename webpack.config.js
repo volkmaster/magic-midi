@@ -54,7 +54,8 @@ module.exports = {
     new webpack.ProvidePlugin({
         $: 'jquery',
         jQuery: 'jquery',
-        axios: 'axios'
+        axios: 'axios',
+        _: 'lodash'
     }),
     new CopyWebpackPlugin([
       {

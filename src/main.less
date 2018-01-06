@@ -91,9 +91,21 @@
 
 body { margin: 0; }
 
+button {
+  -webkit-user-select : none;
+  -moz-user-select    : none;
+  -ms-user-select     : none;
+  user-select         : none;
+}
+
 button:focus { outline: 0; }
 
-img { user-select: none; }
+img {
+  -webkit-user-select : none;
+  -moz-user-select    : none;
+  -ms-user-select     : none;
+  user-select         : none;
+}
 
 .breakpoint-2048(@rules) {
   @media only screen and (min-width: 2049px) { @rules(); }

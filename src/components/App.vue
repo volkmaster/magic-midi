@@ -68,17 +68,18 @@
 }
 
 .app__header {
-  padding-top     : 20px;
-  display         : flex;
-  justify-content : center;
-  align-items     : center;
+  padding-top         : 20px;
+  display             : flex;
+  justify-content     : center;
+  align-items         : center;
+  -webkit-user-select : none;
 }
 
 .app__logo { height: 12vw; }
 
 .app__svg {
-  margin-left : 20vw;
-  padding     : 1px;
+  margin  : 0 20vw;
+  padding : 1px;
 }
 
 .app__keyboard {
@@ -263,8 +264,8 @@
 
       <!-- Keyboard -->
       <svg class="app__svg" width="60vw" height="15vw" viewBox="0 0 100 25" preserveAspectRatio="xMidYMid meet">
-        <rect class="app__key app__key--white" :class="{ 'app__key--pressed': key.on }" :x="(100 / nKeys * index) + '%'" y="0%" :width="(100 / nKeys) + '%'" height="100%" v-for="(key, index) in keys.white" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
-        <rect class="app__key app__key--black" :class="{ 'app__key--pressed': key.on }" :x="(100 / nKeys * (0.75 + index)) + '%'" y="0%" :width="(100 / nKeys * 0.5) + '%'" height="50%" v-for="(key, index) in keys.black" v-if="key.pitch !== -1" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
+        <rect class="app__key app__key--white" :class="{ 'app__key--pressed': isKeyOn(key) }" :x="(100 / nKeys * index) + '%'" y="0%" :width="(100 / nKeys) + '%'" height="100%" v-for="(key, index) in keys.white" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
+        <rect class="app__key app__key--black" :class="{ 'app__key--pressed': isKeyOn(key) }" :x="(100 / nKeys * (0.75 + index)) + '%'" y="0%" :width="(100 / nKeys * 0.5) + '%'" height="50%" v-for="(key, index) in keys.black" v-if="key.pitch !== -1" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
         <g v-show="helperTextVisible">
           <text class="app__key-text app__key-text--white" :x="(100 / nKeys * (0.27 + index)) + '%'" y="90%" v-for="(key, index) in keys.white">{{ key.name }}</text>
           <text class="app__key-text app__key-text--black" :x="(100 / nKeys * (0.88 + index)) + '%'" y="20%" v-for="(key, index) in keys.black" v-if="keys.pitch !== -1">{{ key.name }}</text>
@@ -277,7 +278,7 @@
         <div class="app__instrument" v-for="instrument in instruments">
           <img class="app__img app__img--instrument" :class="{ 'app__img--disabled': recording || playing || saving, 'app__img--instrument--selected': instrument.name === selectedInstrument.name, 'app__img--instrument--recorded': instrument.name !== selectedInstrument.name && instrument.record !== null }" :src="'/assets/images/' + instrument.name + '.svg'" @click="selectInstrument(instrument)"/>
           <div class="app__instrument-controls" v-if="instrument.record">
-            <div class="app__img app__img--checkbox" :class="{ 'app__img--disabled': recording || playing || saving, 'app__img--checkbox--checked': instrument.checked }" @click="instrument.checked = !instrument.checked"></div>
+            <div class="app__img app__img--checkbox" :class="{ 'app__img--disabled': recording || playing || saving, 'app__img--checkbox--checked': instrument.checked }" @click="checkInstrument(instrument)"></div>
             <div class="app__img app__img--delete" :class="{ 'app__img--disabled': recording || playing || saving }" @click="clearRecord(instrument)"></div>
           </div>
         </div>
@@ -306,7 +307,6 @@
 </template>
 
 <script>
-import _ from 'lodash'
 import Instructions from './Instructions.vue'
 
 export default {
@@ -318,35 +318,35 @@ export default {
       helperTextVisible: false,
       keys: {
         white: [
-          { pitch: 60, code: 81, name: 'Q', on: false },
-          { pitch: 62, code: 87, name: 'W', on: false },
-          { pitch: 64, code: 69, name: 'E', on: false },
-          { pitch: 65, code: 82, name: 'R', on: false },
-          { pitch: 67, code: 84, name: 'T', on: false },
-          { pitch: 69, code: 89, name: 'Y', on: false },
-          { pitch: 71, code: 85, name: 'U', on: false },
-          { pitch: 72, code: 90, name: 'Z', on: false },
-          { pitch: 74, code: 88, name: 'X', on: false },
-          { pitch: 76, code: 67, name: 'C', on: false },
-          { pitch: 77, code: 86, name: 'V', on: false },
-          { pitch: 79, code: 66, name: 'B', on: false },
-          { pitch: 81, code: 78, name: 'N', on: false },
-          { pitch: 83, code: 77, name: 'M', on: false }
+          { pitch: 60, code: 81, name: 'Q' },
+          { pitch: 62, code: 87, name: 'W' },
+          { pitch: 64, code: 69, name: 'E' },
+          { pitch: 65, code: 82, name: 'R' },
+          { pitch: 67, code: 84, name: 'T' },
+          { pitch: 69, code: 89, name: 'Y' },
+          { pitch: 71, code: 85, name: 'U' },
+          { pitch: 72, code: 90, name: 'Z' },
+          { pitch: 74, code: 88, name: 'X' },
+          { pitch: 76, code: 67, name: 'C' },
+          { pitch: 77, code: 86, name: 'V' },
+          { pitch: 79, code: 66, name: 'B' },
+          { pitch: 81, code: 78, name: 'N' },
+          { pitch: 83, code: 77, name: 'M' }
         ],
         black: [
-          { pitch: 61, code: 50, name: '2', on: false },
-          { pitch: 63, code: 51, name: '3', on: false },
+          { pitch: 61, code: 50, name: '2' },
+          { pitch: 63, code: 51, name: '3' },
           { pitch: -1, code: -1 },
-          { pitch: 66, code: 53, name: '5', on: false },
-          { pitch: 68, code: 54, name: '6', on: false },
-          { pitch: 70, code: 55, name: '7', on: false },
+          { pitch: 66, code: 53, name: '5' },
+          { pitch: 68, code: 54, name: '6' },
+          { pitch: 70, code: 55, name: '7' },
           { pitch: -1, code: -1 },
-          { pitch: 73, code: 83, name: 'S', on: false },
-          { pitch: 75, code: 68, name: 'D', on: false },
+          { pitch: 73, code: 83, name: 'S' },
+          { pitch: 75, code: 68, name: 'D' },
           { pitch: -1, code: -1 },
-          { pitch: 78, code: 71, name: 'G', on: false },
-          { pitch: 80, code: 72, name: 'H', on: false },
-          { pitch: 82, code: 74, name: 'J', on: false }
+          { pitch: 78, code: 71, name: 'G' },
+          { pitch: 80, code: 72, name: 'H' },
+          { pitch: 82, code: 74, name: 'J' }
         ]
       },
       instruments: [
@@ -362,6 +362,7 @@ export default {
       NOTE_OFF: 1,
       NOTE_VELOCITY: 64,
       NOTE_DELAY: 0,
+      activeChannelKeys: {},
       selectedInstrument: null,
       recording: false,
       playing: false,
@@ -385,6 +386,7 @@ export default {
   },
   created () {
     this.setupMIDIPlugin()
+    this.setupChannelKeys()
     this.selectedInstrument = this.instruments[0]
   },
   mounted () {
@@ -415,6 +417,19 @@ export default {
         }
       })
     },
+    setupChannelKeys () {
+      let channels = {}
+      for (let instrument of this.instruments) {
+        channels[instrument.channel] = false
+      }
+
+      let keys = [].concat(this.keys.black, this.keys.white)
+      for (let key of keys) {
+        if (key.pitch !== -1) {
+          this.activeChannelKeys[key.pitch] = Object.assign({}, channels)
+        }
+      }
+    },
     getKey (keyCode) {
       let keys = [
         ...this.keys.white.filter(key => key.code === keyCode),
@@ -422,41 +437,65 @@ export default {
       ]
       return keys.length > 0 ? keys[0] : null
     },
+    isKeyOn (key) {
+      let pitch = key.pitch
+      let channel = this.selectedInstrument.channel
+      return this.activeChannelKeys[pitch][channel]
+    },
+    setKeyState (key, state) {
+      let pitch = key.pitch
+      let channel = this.selectedInstrument.channel
+      this.activeChannelKeys[pitch][channel] = state
+    },
     mousedown (key) {
-      key.on = true
-      this.noteOn(this.selectedInstrument.channel, key.pitch)
+      this.setKeyState(key, true)
+      let pitch = key.pitch
+      let channel = this.selectedInstrument.channel
+      this.noteOn(channel, pitch)
+      if (this.recording) {
+        this.recordNote(channel, this.NOTE_ON, Date.now(), pitch)
+      }
     },
     mouseup (key) {
-      key.on = false
-      this.noteOff(this.selectedInstrument.channel, key.pitch)
+      this.setKeyState(key, false)
+      let pitch = key.pitch
+      let channel = this.selectedInstrument.channel
+      this.noteOff(channel, pitch)
+      if (this.recording) {
+        this.recordNote(channel, this.NOTE_OFF, Date.now(), pitch)
+      }
     },
     keydown (event) {
       let key = this.getKey(event.keyCode)
-      if (key && !key.on) {
-        key.on = true
-        this.noteOn(this.selectedInstrument.channel, key.pitch)
+      if (key && !this.isKeyOn(key)) {
+        this.setKeyState(key, true)
+        let pitch = key.pitch
+        let channel = this.selectedInstrument.channel
+        this.noteOn(channel, pitch)
+        if (this.recording) {
+          this.recordNote(channel, this.NOTE_ON, Date.now(), pitch)
+        }
       }
     },
     keyup (event) {
       let key = this.getKey(event.keyCode)
-      if (key) {
-        key.on = false
-        this.noteOff(this.selectedInstrument.channel, key.pitch)
+      if (key && this.isKeyOn(key)) {
+        this.setKeyState(key, false)
+        let pitch = key.pitch
+        let channel = this.selectedInstrument.channel
+        this.noteOff(channel, pitch)
+        if (this.recording) {
+          this.recordNote(channel, this.NOTE_OFF, Date.now(), pitch)
+        }
       }
     },
     noteOn (channel, pitch) {
       // channel id, note number, velocity, delay
       MIDI.noteOn(channel, pitch, this.NOTE_VELOCITY, this.NOTE_DELAY)
-      if (this.recording) {
-        this.recordNote(channel, this.NOTE_ON, Date.now(), pitch)
-      }
     },
     noteOff (channel, pitch) {
       // channel id, note number, delay
       MIDI.noteOff(channel, pitch, this.NOTE_DELAY)
-      if (this.recording) {
-        this.recordNote(channel, this.NOTE_OFF, Date.now(), pitch)
-      }
     },
     recordNote (channel, event, currentTime, pitch) {
       let record = this.selectedInstrument.record
@@ -473,9 +512,15 @@ export default {
         this.selectedInstrument = instrument
       }
     },
+    checkInstrument (instrument) {
+      if (!this.recording && !this.playing && !this.saving) {
+        instrument.checked = !instrument.checked
+      }
+    },
     clearRecord (instrument) {
       if (!this.recording && !this.playing && !this.saving) {
         instrument.record = null
+        instrument.checked = false
       }
     },
     record () {
