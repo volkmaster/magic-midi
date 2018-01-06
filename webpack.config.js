@@ -47,7 +47,6 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: '"development"',
         BASE_URL: `"http://localhost:${process.env.PORT}"`
       }
     }),

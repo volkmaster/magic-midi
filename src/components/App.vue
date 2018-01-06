@@ -78,6 +78,8 @@
 .app__logo { height: 12vw; }
 
 .app__svg {
+  width   : 60vw;
+  height  : 15vw;
   margin  : 0 20vw;
   padding : 1px;
 }
@@ -263,7 +265,7 @@
       </div>
 
       <!-- Keyboard -->
-      <svg class="app__svg" width="60vw" height="15vw" viewBox="0 0 100 25" preserveAspectRatio="xMidYMid meet">
+      <svg class="app__svg" viewBox="0 0 100 25" preserveAspectRatio="xMidYMid meet">
         <rect class="app__key app__key--white" :class="{ 'app__key--pressed': key.pressed }" :x="(100 / nKeys * index) + '%'" y="0%" :width="(100 / nKeys) + '%'" height="100%" v-for="(key, index) in keys.white" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
         <rect class="app__key app__key--black" :class="{ 'app__key--pressed': key.pressed }" :x="(100 / nKeys * (0.75 + index)) + '%'" y="0%" :width="(100 / nKeys * 0.5) + '%'" height="50%" v-for="(key, index) in keys.black" v-if="key.pitch !== -1" @mousedown="mousedown(key)" @mouseup="mouseup(key)"></rect>
         <g v-show="helperTextVisible">
