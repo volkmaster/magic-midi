@@ -26,3 +26,7 @@ git push heroku master
 
 ## Production version URL
 [https://magic-midi.herokuapp.com/](https://magic-midi.herokuapp.com/)
+
+## Authors
+- Tina Avbelj (tinaavbelj)
+- Žiga Vučko (volkmaster)
